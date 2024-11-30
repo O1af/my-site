@@ -14,7 +14,10 @@ interface NavSection {
   href: string;
 }
 
-const navigationSections: NavSection[] = [];
+const navigationSections: NavSection[] = [
+  { title: "Home", href: "/" },
+  { title: "Blog", href: "/blog" },
+];
 
 const Header: React.FC = () => (
   <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

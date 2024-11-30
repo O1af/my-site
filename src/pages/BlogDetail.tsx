@@ -31,7 +31,7 @@ const BlogDetail: React.FC = () => {
 
   return (
     <div className="p-8">
-      <ReactMarkdown className="prose" remarkPlugins={[remarkGfm]}>
+      <ReactMarkdown className="markdown" remarkPlugins={[remarkGfm]}>
         {content}
       </ReactMarkdown>
     </div>

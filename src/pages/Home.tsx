@@ -81,10 +81,10 @@ const Home: React.FC = () => (
           <div className="flex-1 space-y-4 text-center md:text-left">
             <h1 className="text-4xl font-bold tracking-tight">Olaf Dsouza</h1>
             <p className="text-lg text-muted-foreground">
-              Hi! I'm Olaf, a software developer passionate about building
-              innovative solutions. With experience in operating systems,
-              back-end engineering, and mentoring, I bring technical expertise
-              and a collaborative spirit to every project I tackle.
+              👋 Hi there! I'm Olaf Dsouza, a junior at the University of
+              Michigan pursuing a Bachelor's in Computer Science with a strong
+              passion for Operating Systems and Distributed Systems. Here's a
+              quick snapshot of my journey so far:
             </p>
           </div>
         </div>

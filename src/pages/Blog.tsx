@@ -4,8 +4,6 @@ import { Link } from "react-router";
 interface ArticleMetadata {
   id: string;
   title: string;
-  date: string;
-  summary: string;
 }
 const Blog: React.FC = () => {
   const [articles, setArticles] = useState<ArticleMetadata[]>([]);
@@ -25,14 +23,14 @@ const Blog: React.FC = () => {
           Object.entries(files).map(async ([path, loader]) => {
             try {
               const content = await loader();
-              const { data } = matter(content);
+              const firstLine = content.split("\n")[0];
               const id = path.split("/").pop()?.replace(".md", "") || "";
+              //get rid of leading # and whitespace
+              const title = firstLine?.replace(/^#\s*/, "");
 
               return {
                 id,
-                title: data.title || "Untitled",
-                date: data.date || new Date().toISOString(),
-                summary: data.summary || "No summary available",
+                title: title || "Untitled",
               } as ArticleMetadata;
             } catch (error) {
               console.error(`Error processing ${path}:`, error);
@@ -42,11 +40,9 @@ const Blog: React.FC = () => {
         );
 
         setArticles(
-          loadedArticles
-            .filter((article): article is ArticleMetadata => article !== null)
-            .sort(
-              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-            )
+          loadedArticles.filter(
+            (article): article is ArticleMetadata => article !== null
+          )
         );
       } catch (err) {
         setError(
@@ -93,10 +89,6 @@ const Blog: React.FC = () => {
               className="p-4 border rounded hover:shadow-md transition"
             >
               <h2 className="text-2xl font-semibold">{article.title}</h2>
-              <p className="text-gray-600 text-sm">
-                {new Date(article.date).toLocaleDateString()}
-              </p>
-              <p className="mt-2">{article.summary}</p>
               <Link
                 to={`/blog/${article.id}`}
                 className="text-blue-600 hover:underline mt-4 inline-block"
