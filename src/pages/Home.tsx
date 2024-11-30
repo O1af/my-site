@@ -110,4 +110,4 @@ const Home: React.FC = () => (
   </ScrollArea>
 );
 
-export default Home;
+export default React.memo(Home);

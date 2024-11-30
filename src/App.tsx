@@ -23,4 +23,4 @@ const App: React.FC = () => (
   </ThemeProvider>
 );
 
-export default App;
+export default React.memo(App);

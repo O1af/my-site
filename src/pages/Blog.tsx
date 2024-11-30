@@ -103,4 +103,4 @@ const Blog: React.FC = () => {
   );
 };
 
-export default Blog;
+export default React.memo(Blog);
