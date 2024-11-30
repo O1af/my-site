@@ -16,7 +16,7 @@ interface NavSection {
 
 const navigationSections: NavSection[] = [
   { title: "Home", href: "/" },
-  { title: "Blog", href: "/blog" },
+  { title: "Blog", href: "/#/blog" },
 ];
 
 const Header: React.FC = () => (
