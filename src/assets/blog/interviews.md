@@ -12,7 +12,7 @@ date: 2024-12-04
 
 ## Introduction
 
-Interviews can be stressful, but a strong game plan makes all the difference. This guide combines behavioral and technical strategies to help you stand out in any interview setting.
+Interviews (and recruiting season in general) can be super stressful. My goal with this guide is to give you some strategies to deal with common behavioral/technical patterns in software engineering interviews.
 
 ---
 
@@ -78,13 +78,50 @@ Behavioral questions often start with, "Tell me about a time when..." Use the **
 
 ## Technical Interviews: Strategies for Success
 
-### Coding Challenges
+### Technical Interviews: Strategies for Success
 
-1. **Understand the problem**: Ask clarifying questions about inputs and edge cases.
-2. **Plan your approach**: Discuss your thought process with the interviewer.
-3. **Code clearly**: Explain each step as you write.
-4. **Test thoroughly**: Consider all edge cases and debug as needed.
-5. **Analyze complexity**: Explain time and space requirements.
+#### Leetcode Style Problems
+
+1. **Read and Understand**:
+
+   - Read the entire question carefully
+   - Note key requirements and constraints
+   - Identify input/output formats
+
+2. **Ask Clarifying Questions**:
+
+   - Confirm input ranges and types
+   - Discuss edge cases
+   - Verify expected output format
+
+3. **Plan Your Approach**:
+
+   - Think through possible solutions
+   - Explain your strategy to interviewer
+   - Get confirmation before coding
+
+4. **Implementation**:
+
+   - Write clean, readable code
+   - Explain your logic line by line
+   - Use meaningful variable names
+
+5. **Test Your Solution**:
+
+   - Start with simple test cases
+   - Consider edge cases
+   - Walk through code execution
+
+6. **Debug and Optimize**:
+
+   - Fix any issues found
+   - Run all test cases
+   - Look for optimization opportunities
+
+7. **Complexity Analysis**:
+   - Explain time complexity (Big O)
+   - Discuss space complexity
+   - Consider possible trade-offs
 
 ### System Design
 
@@ -96,16 +133,18 @@ Behavioral questions often start with, "Tell me about a time when..." Use the **
 
 2. **Estimations**:
 
+   - Estimate System traffic in terms of requirements (req/s,data storage,bandwith)
    - Work in bytes for clarity.
    - Example: 1 day = 86,400 seconds; 1 KB = 1,000 bytes.
 
 3. **Design APIs**:
 
    - List key endpoints and their purposes.
+   - Doesn’t have to be exhaustive just the most important ones
 
 4. **High-Level Design**:
 
-   - Define core components (e.g., load balancers, caches, databases).
+   - Lay out core components(load balancers,CDN,Cache,Database,Application)
    - Map data flow from request to response.
 
 5. **Database Design**:
@@ -114,6 +153,7 @@ Behavioral questions often start with, "Tell me about a time when..." Use the **
    - Optimize for performance and requirements.
 
 6. **Extensibility**:
+   - Expand on Initial Design
    - Add scalability and fault tolerance.
    - Eliminate single points of failure and evaluate trade-offs.
 
@@ -133,7 +173,7 @@ Behavioral questions often start with, "Tell me about a time when..." Use the **
 
 ### Questions to Ask the Interviewer
 
-- How does the team foster collaboration and mentorship?
+- In your experience, is there a culture of collaboration and mentorship?
 - What projects have interns worked on in the past?
 - Are there opportunities to grow and take on responsibilities?
 
@@ -149,7 +189,25 @@ Behavioral questions often start with, "Tell me about a time when..." Use the **
 
 ## Helpful Resources
 
-- **[Leetcode Practice](https://leetcode.com/)**: Master coding challenges.
-- **[System Design Primer](https://github.com/donnemartin/system-design-primer)**: Learn system design basics.
+### General
 
-Preparation and confidence go hand in hand. Now go ace those interviews. Good luck!
+- **[_Neetcode_](https://neetcode.io/roadmap)**: 150 Essential Interview Questions to practice
+- **[_Levels.fyi_](https://www.levels.fyi/internships/)**: Great website for all things related to salary/compensation
+
+### System Design
+
+- **[_System Design Primer_](https://github.com/donnemartin/system-design-primer)**: Learn system design basics.
+- **[_System Design Playlist_](https://www.youtube.com/watch?v=v-porYk5mI8&list=PLUPSMCjQ-7ofQw9qBUT0u9B9OunMybapV)**: Really good System design playlist
+- **[_System Design Recap_](https://www.youtube.com/watch?v=iYIjJ7utdDI)**: Good Video to cram/learn sys des concepts
+
+## FootNotes
+
+This guide is based off my personal notes (anonymized) and has helped me land offers at:
+
+- Netflix
+- Doordash
+- Microsoft
+- Meta
+- Deutsche Bank
+
+I hope this guide was helpful to you in one way or another. Best of luck on your interviews!
