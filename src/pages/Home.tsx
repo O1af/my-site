@@ -46,7 +46,7 @@ const experiences: Experience[] = [
   {
     title: "📚 Teaching Assistant",
     company: "University of Michigan",
-    period: "Aug 2024 - Present",
+    period: "Aug 2024 - Dec 2024",
     description:
       "Guided students through Operating Systems concepts such as concurrency and memory management. Conducted weekly lab sessions for 30+ students.",
   },
