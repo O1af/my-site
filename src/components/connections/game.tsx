@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import WordTile from "./tile";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,12 @@ type Category = {
   words: string[];
 };
 
+type Guess = {
+  words: string[];
+  correct: boolean;
+  categoryColor?: string;
+};
+
 type GameState = {
   categories: Category[];
   remainingWords: string[];
@@ -23,6 +29,7 @@ type GameState = {
   gameOver: boolean;
   gameWon: boolean;
   isShuffling: boolean;
+  guessHistory: Guess[];
 };
 
 // Sample game data
@@ -50,7 +57,27 @@ const INITIAL_CATEGORIES: Category[] = [
 ];
 
 export default function ConnectionsGame() {
-  const [gameState, setGameState] = useState<GameState>(() => initializeGame());
+  const [gameState, setGameState] = useState<GameState>(() => {
+    // Try to load saved game state from localStorage
+    if (typeof window !== "undefined") {
+      const savedState = localStorage.getItem("connectionsGameState");
+      if (savedState) {
+        try {
+          return JSON.parse(savedState);
+        } catch (e) {
+          console.error("Failed to parse saved game state");
+        }
+      }
+    }
+    return initializeGame();
+  });
+
+  // Save game state to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("connectionsGameState", JSON.stringify(gameState));
+    }
+  }, [gameState]);
 
   function initializeGame(): GameState {
     // Flatten all words from all categories
@@ -68,6 +95,7 @@ export default function ConnectionsGame() {
       gameOver: false,
       gameWon: false,
       isShuffling: false,
+      guessHistory: [],
     };
   }
 
@@ -112,7 +140,7 @@ export default function ConnectionsGame() {
     });
 
     if (matchingCategory) {
-      // Correct match
+      // Correct match - record the guess
       setGameState((prev) => {
         const newRemainingWords = prev.remainingWords.filter(
           (word) => !prev.selectedWords.includes(word)
@@ -121,6 +149,16 @@ export default function ConnectionsGame() {
         const newSolvedCategories = [
           ...prev.solvedCategories,
           matchingCategory,
+        ];
+
+        // Add the guess to history
+        const newGuessHistory = [
+          ...prev.guessHistory,
+          {
+            words: [...prev.selectedWords],
+            correct: true,
+            categoryColor: matchingCategory.color,
+          },
         ];
 
         // Check if game is won
@@ -133,13 +171,23 @@ export default function ConnectionsGame() {
           solvedCategories: newSolvedCategories,
           gameOver: gameWon,
           gameWon,
+          guessHistory: newGuessHistory,
         };
       });
     } else {
-      // Incorrect match
+      // Incorrect match - record the incorrect guess
       setGameState((prev) => {
         const newMistakesRemaining = prev.mistakesRemaining - 1;
         const gameOver = newMistakesRemaining === 0;
+
+        // Add the incorrect guess to history
+        const newGuessHistory = [
+          ...prev.guessHistory,
+          {
+            words: [...prev.selectedWords],
+            correct: false,
+          },
+        ];
 
         return {
           ...prev,
@@ -147,6 +195,7 @@ export default function ConnectionsGame() {
           mistakesRemaining: newMistakesRemaining,
           gameOver,
           gameWon: false,
+          guessHistory: newGuessHistory,
         };
       });
     }
@@ -183,7 +232,11 @@ export default function ConnectionsGame() {
   }
 
   function handleReset() {
-    setGameState(initializeGame());
+    const newState = initializeGame();
+    setGameState(newState);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("connectionsGameState", JSON.stringify(newState));
+    }
   }
 
   // If game is over, show the game over screen
@@ -196,6 +249,8 @@ export default function ConnectionsGame() {
           (category) => !gameState.solvedCategories.includes(category)
         )}
         onReset={handleReset}
+        guessHistory={gameState.guessHistory}
+        allCategories={gameState.categories}
       />
     );
   }
