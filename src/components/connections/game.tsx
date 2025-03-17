@@ -28,24 +28,24 @@ type GameState = {
 // Sample game data
 const INITIAL_CATEGORIES: Category[] = [
   {
-    name: "VARIATION FROM THE NORM",
+    name: "WAYS TO WASTE TIME",
     color: "bg-yellow-200",
-    words: ["ALTERNATIVE", "BREAK", "CHANGE", "DEPARTURE"],
+    words: ["NETFLIX", "TIKTOK", "TWITTER", "INSTAGRAM"],
   },
   {
-    name: "THINGS THAT RING",
+    name: "SPORTS ENDING IN -BALL",
     color: "bg-green-200",
-    words: ["BELL", "ALARM", "PHONE", "INTERCOM"],
+    words: ["PICKLE", "FOOT", "DODGE", "VOLLEY"],
   },
   {
-    name: "FOOTWEAR",
+    name: "FOOTBALL TERMS",
     color: "bg-blue-200",
-    words: ["MOCCASINS", "SADDLE", "FOOTBALL", "KEYS"],
+    words: ["HIKE", "RUN", "POCKET", "DRIVE"],
   },
   {
-    name: "WORDS MEANING EXTRAORDINARY",
+    name: "MY FAVORITE FOODS",
     color: "bg-purple-200",
-    words: ["WONDER", "LEGEND", "KING", "WALLET"],
+    words: ["COFFEE", "ICE CREAM", "APPLE", "PIZZA"],
   },
 ];
 

@@ -126,20 +126,18 @@ const Home: React.FC = () => (
               </div>
 
               <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                👋 Hi there! I'm a junior at the University of Michigan pursuing
-                a Bachelor's in Computer Science with a strong passion for
-                Operating Systems and Distributed Systems. Here's a quick
+                👋 Hi there! I'm a student at the University of Michigan
+                pursuing a Bachelor's in Computer Science with a strong passion
+                for Operating Systems and Distributed Systems. Here's a quick
                 snapshot of my journey so far:
               </p>
 
               <div className="flex flex-wrap gap-2 sm:gap-3 justify-center md:justify-start">
                 {[
-                  "C++",
-                  "React",
-                  "TypeScript",
-                  "Node.js",
-                  "AWS",
-                  "Systems Programming",
+                  "Distributed Systems",
+                  "Web Development",
+                  "Operating Systems",
+                  "Database Systems",
                 ].map((skill) => (
                   <span
                     key={skill}
@@ -148,13 +146,6 @@ const Home: React.FC = () => (
                     {skill}
                   </span>
                 ))}
-              </div>
-
-              <div className="flex gap-4 justify-center md:justify-start pt-2">
-                <Button variant="default" size="sm" className="group">
-                  <DownloadIcon className="mr-2 h-4 w-4 group-hover:animate-bounce" />
-                  Resume
-                </Button>
               </div>
             </div>
           </div>
