@@ -4,4 +4,5 @@ export interface Experience {
   period: string;
   description: string;
   image?: string;
+  skills?: string[]; // Add skills array to the interface
 }

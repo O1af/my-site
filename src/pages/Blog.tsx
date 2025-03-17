@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
+import { motion } from "motion/react";
 import remarkParse from "remark-parse";
 import remarkFrontmatter from "remark-frontmatter";
 import { unified } from "unified";
 import yaml from "yaml";
+import { PageTransition } from "@/components/utils/PageTransition";
+import { AnimatedHeading } from "@/components/utils/AnimatedHeading";
 import {
   Card,
   CardHeader,
@@ -23,6 +26,21 @@ interface ArticleMetadata {
 const parseDateLocal = (dateString: string): Date => {
   const [year, month, day] = dateString.split("-").map(Number);
   return new Date(year, month - 1, day);
+};
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
 
 const Blog: React.FC = () => {
@@ -105,52 +123,100 @@ const Blog: React.FC = () => {
   }, []);
 
   return (
-    <div className="p-8">
-      <header className="text-center mb-12">
-        <h1 className="text-4xl font-bold">Blog</h1>
-        <p className="text-lg mt-4">Collection of Thoughts</p>
+    <PageTransition className="container mx-auto px-4 py-12">
+      <header className="text-center mb-16">
+        <AnimatedHeading level={1} gradient={true}>
+          Blog
+        </AnimatedHeading>
+        <motion.p
+          className="text-xl mt-4 text-muted-foreground"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          Sharing thoughts, ideas, and discoveries
+        </motion.p>
       </header>
 
-      {error && <p className="text-red-500">{error}</p>}
+      {error && (
+        <motion.p className="text-red-500 text-center p-4 mb-8 bg-red-50 rounded-lg">
+          {error}
+        </motion.p>
+      )}
+
       {isLoading ? (
-        <p>Loading...</p>
+        <div className="flex justify-center items-center h-64">
+          <motion.div
+            className="w-12 h-12 rounded-full border-4 border-primary border-t-transparent"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          />
+        </div>
       ) : (
         <section>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div
+            className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+            variants={container}
+            initial="hidden"
+            animate="show"
+          >
             {articles.map((article) => (
-              <Card key={article.id}>
-                <div className="relative h-[200px] w-full overflow-hidden">
-                  {article.thumbnail && (
+              <motion.div key={article.id} variants={item}>
+                <Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
+                  <div className="relative h-[220px] w-full overflow-hidden bg-muted">
                     <img
                       src={`/${article.thumbnail}`}
                       alt={article.title}
                       className="absolute inset-0 w-full h-full object-contain transition-transform duration-300 hover:scale-105"
                     />
-                  )}
-                </div>
-                <CardHeader>
-                  <CardTitle>{article.title}</CardTitle>
-                  <CardDescription>
-                    {new Date(article.date).toLocaleDateString()}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-700">{article.summary}</p>
-                </CardContent>
-                <CardFooter>
-                  <Link
-                    to={`/blog/${article.id}`}
-                    className="text-blue-600 hover:underline"
-                  >
-                    Read More
-                  </Link>
-                </CardFooter>
-              </Card>
+                  </div>
+                  <CardHeader>
+                    <CardTitle className="text-2xl font-bold hover:text-primary transition-colors duration-200">
+                      {article.title}
+                    </CardTitle>
+                    <CardDescription className="font-medium">
+                      {new Date(article.date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="grow">
+                    <p className="text-muted-foreground">{article.summary}</p>
+                  </CardContent>
+                  <CardFooter className="pt-0">
+                    <Link
+                      to={`/blog/${article.id}`}
+                      className="inline-flex items-center text-primary hover:text-primary/80 font-medium transition-colors"
+                    >
+                      Read More
+                      <motion.svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="ml-1"
+                        whileHover={{ x: 4 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                      </motion.svg>
+                    </Link>
+                  </CardFooter>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
       )}
-    </div>
+    </PageTransition>
   );
 };
 
