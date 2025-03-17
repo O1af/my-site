@@ -13,8 +13,6 @@ import { Project } from "@/types/project";
 import { ProjectsCard } from "@/components/ProjectsCard";
 import { Experience } from "@/types/experience";
 import { ExperiencesCard } from "@/components/ExperiencesCard";
-import { Button } from "@/components/ui/button";
-import { DownloadIcon } from "lucide-react";
 
 const projects: Project[] = [
   {

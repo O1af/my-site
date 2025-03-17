@@ -3,7 +3,7 @@ import { motion, useInView, Variants } from "motion/react";
 import { Experience } from "@/types/experience";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { BriefcaseIcon, CalendarIcon, ChevronRightIcon } from "lucide-react";
+import { BriefcaseIcon, CalendarIcon } from "lucide-react";
 
 interface ExperiencesProps {
   experiences: Experience[];
