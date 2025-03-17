@@ -1,9 +1,13 @@
-import React, { useRef } from "react";
+import React, { useRef, lazy, Suspense } from "react";
 import { motion, useInView, Variants } from "motion/react";
 import { Experience } from "@/types/experience";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { BriefcaseIcon, CalendarIcon } from "lucide-react";
+
+// Lazy load Badge component
+const Badge = lazy(() =>
+  import("@/components/ui/badge").then((module) => ({ default: module.Badge }))
+);
 
 interface ExperiencesProps {
   experiences: Experience[];
@@ -107,15 +111,17 @@ export const ExperiencesCard: React.FC<ExperiencesProps> = React.memo(
                       {/* Skills badges */}
                       {experience.skills && experience.skills.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-3">
-                          {experience.skills.map((skill, i) => (
-                            <Badge
-                              key={i}
-                              variant="secondary"
-                              className="bg-primary/10 text-primary/90 hover:bg-primary/20 transition-colors text-xs py-0.5 font-medium"
-                            >
-                              {skill}
-                            </Badge>
-                          ))}
+                          <Suspense fallback={<div className="min-h-5"></div>}>
+                            {experience.skills.map((skill, i) => (
+                              <Badge
+                                key={i}
+                                variant="secondary"
+                                className="bg-primary/10 text-primary/90 hover:bg-primary/20 transition-colors text-xs py-0.5 font-medium"
+                              >
+                                {skill}
+                              </Badge>
+                            ))}
+                          </Suspense>
                         </div>
                       )}
                     </CardContent>
