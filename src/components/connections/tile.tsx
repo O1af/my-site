@@ -17,45 +17,74 @@ export default function WordTile({
   disabled = false,
 }: WordTileProps) {
   const textRef = useRef<HTMLDivElement>(null);
+  const tileRef = useRef<HTMLButtonElement>(null);
   const [fontSize, setFontSize] = useState("text-lg");
 
-  // Determine font size based on word length and container size
+  // Determine font size based on word length, container size and screen size
   useEffect(() => {
-    if (textRef.current) {
-      // Reset to largest size first
-      setFontSize("text-lg");
+    const adjustFontSize = () => {
+      if (textRef.current && tileRef.current) {
+        // Get the current tile dimensions
+        const tileWidth = tileRef.current.offsetWidth;
+        const tileHeight = tileRef.current.offsetHeight;
+        const effectiveTileWidth = tileWidth * 0.85; // Account for padding
+        const effectiveTileHeight = tileHeight * 0.85;
 
-      // Check if text overflows and adjust size accordingly
-      setTimeout(() => {
-        if (textRef.current) {
-          const isOverflowing =
+        // Start with the largest size
+        let currentSize = "text-lg";
+        textRef.current.className = `text-center ${currentSize} leading-tight max-h-full overflow-hidden flex items-center justify-center`;
+
+        // Check if content fits
+        let isOverflowing =
+          textRef.current.scrollHeight > textRef.current.clientHeight ||
+          textRef.current.scrollWidth > textRef.current.clientWidth;
+
+        // Step down size until content fits
+        if (isOverflowing) {
+          currentSize = "text-base";
+          textRef.current.className = `text-center ${currentSize} leading-tight max-h-full overflow-hidden flex items-center justify-center`;
+
+          isOverflowing =
             textRef.current.scrollHeight > textRef.current.clientHeight ||
             textRef.current.scrollWidth > textRef.current.clientWidth;
 
           if (isOverflowing) {
-            setFontSize("text-base");
+            currentSize = "text-sm";
+            textRef.current.className = `text-center ${currentSize} leading-tight max-h-full overflow-hidden flex items-center justify-center`;
 
-            // Check again with medium size
-            setTimeout(() => {
-              if (textRef.current) {
-                const stillOverflowing =
-                  textRef.current.scrollHeight > textRef.current.clientHeight ||
-                  textRef.current.scrollWidth > textRef.current.clientWidth;
-                if (stillOverflowing) {
-                  setFontSize("text-sm");
-                }
-              }
-            }, 0);
+            isOverflowing =
+              textRef.current.scrollHeight > textRef.current.clientHeight ||
+              textRef.current.scrollWidth > textRef.current.clientWidth;
+
+            if (isOverflowing) {
+              currentSize = "text-xs";
+              textRef.current.className = `text-center ${currentSize} leading-tight max-h-full overflow-hidden flex items-center justify-center`;
+            }
           }
         }
-      }, 0);
-    }
-  }, [word]);
+
+        // Apply final size
+        setFontSize(currentSize);
+      }
+    };
+
+    // Immediate check and then a second check after render to be sure
+    adjustFontSize();
+    const timeoutId = setTimeout(adjustFontSize, 50);
+
+    // Add resize listener
+    window.addEventListener("resize", adjustFontSize);
+    return () => {
+      window.removeEventListener("resize", adjustFontSize);
+      clearTimeout(timeoutId);
+    };
+  }, [word]); // Remove fontSize dependency to prevent re-render loops
 
   return (
     <motion.button
+      ref={tileRef}
       className={`
-        w-full aspect-square flex items-center justify-center font-bold p-2
+        w-full aspect-square flex items-center justify-center font-bold px-1 py-1
         rounded-md transition-colors duration-200 border
         ${
           selected
@@ -73,7 +102,7 @@ export default function WordTile({
     >
       <div
         ref={textRef}
-        className={`text-center ${fontSize} leading-tight max-h-full overflow-hidden flex items-center justify-center`}
+        className={`text-center ${fontSize} leading-tight w-full h-full overflow-hidden flex items-center justify-center`}
       >
         {word}
       </div>

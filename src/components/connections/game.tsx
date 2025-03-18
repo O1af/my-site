@@ -59,6 +59,16 @@ const INITIAL_CATEGORIES: Category[] = [
 // Define a constant for localStorage key to ensure consistency
 const STORAGE_KEY = "connectionsGameState1";
 
+// Fisher-Yates shuffle algorithm for better randomization
+function shuffleArray<T>(array: T[]): T[] {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+}
+
 export default function ConnectionsGame() {
   const [gameState, setGameState] = useState<GameState>(() => {
     // Try to load saved game state from localStorage
@@ -90,8 +100,8 @@ export default function ConnectionsGame() {
     // Flatten all words from all categories
     const allWords = INITIAL_CATEGORIES.flatMap((category) => category.words);
 
-    // Shuffle the words
-    const shuffledWords = [...allWords].sort(() => Math.random() - 0.5);
+    // Shuffle the words using Fisher-Yates algorithm
+    const shuffledWords = shuffleArray(allWords);
 
     return {
       categories: INITIAL_CATEGORIES,
@@ -221,9 +231,7 @@ export default function ConnectionsGame() {
     setTimeout(() => {
       setGameState((prev) => ({
         ...prev,
-        remainingWords: [...prev.remainingWords].sort(
-          () => Math.random() - 0.5
-        ),
+        remainingWords: shuffleArray(prev.remainingWords),
         isShuffling: false,
       }));
     }, 500);
