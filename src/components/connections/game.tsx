@@ -56,16 +56,19 @@ const INITIAL_CATEGORIES: Category[] = [
   },
 ];
 
+// Define a constant for localStorage key to ensure consistency
+const STORAGE_KEY = "connectionsGameState1";
+
 export default function ConnectionsGame() {
   const [gameState, setGameState] = useState<GameState>(() => {
     // Try to load saved game state from localStorage
     if (typeof window !== "undefined") {
-      const savedState = localStorage.getItem("connectionsGameState1");
+      const savedState = localStorage.getItem(STORAGE_KEY);
       if (savedState) {
         try {
           return JSON.parse(savedState);
         } catch (e) {
-          console.error("Failed to parse saved game state");
+          console.error("Failed to parse saved game state:", e);
         }
       }
     }
@@ -75,7 +78,11 @@ export default function ConnectionsGame() {
   // Save game state to localStorage whenever it changes
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("connectionsGameState1", JSON.stringify(gameState));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
+      } catch (e) {
+        console.error("Failed to save game state:", e);
+      }
     }
   }, [gameState]);
 
@@ -235,7 +242,11 @@ export default function ConnectionsGame() {
     const newState = initializeGame();
     setGameState(newState);
     if (typeof window !== "undefined") {
-      localStorage.setItem("connectionsGameState1", JSON.stringify(newState));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
+      } catch (e) {
+        console.error("Failed to save reset game state:", e);
+      }
     }
   }
 
