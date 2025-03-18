@@ -60,7 +60,7 @@ export default function ConnectionsGame() {
   const [gameState, setGameState] = useState<GameState>(() => {
     // Try to load saved game state from localStorage
     if (typeof window !== "undefined") {
-      const savedState = localStorage.getItem("connectionsGameState");
+      const savedState = localStorage.getItem("connectionsGameState1");
       if (savedState) {
         try {
           return JSON.parse(savedState);
@@ -235,7 +235,7 @@ export default function ConnectionsGame() {
     const newState = initializeGame();
     setGameState(newState);
     if (typeof window !== "undefined") {
-      localStorage.setItem("connectionsGameState", JSON.stringify(newState));
+      localStorage.setItem("connectionsGameState1", JSON.stringify(newState));
     }
   }
 
