@@ -6,6 +6,7 @@ import WordTile from "./tile";
 import { Button } from "@/components/ui/button";
 import CategoryReveal from "./reveal";
 import GameOver from "./end";
+import { toast } from "sonner";
 
 // Define types
 type Category = {
@@ -56,10 +57,9 @@ const INITIAL_CATEGORIES: Category[] = [
   },
 ];
 
-// Define a constant for localStorage key to ensure consistency
 const STORAGE_KEY = "connectionsGameState1";
 
-// Fisher-Yates shuffle algorithm for better randomization
+// Fisher-Yates shuffle algorithm
 function shuffleArray<T>(array: T[]): T[] {
   const newArray = [...array];
   for (let i = newArray.length - 1; i > 0; i--) {
@@ -71,15 +71,12 @@ function shuffleArray<T>(array: T[]): T[] {
 
 export default function ConnectionsGame() {
   const [gameState, setGameState] = useState<GameState>(() => {
-    // Try to load saved game state from localStorage
     if (typeof window !== "undefined") {
-      const savedState = localStorage.getItem(STORAGE_KEY);
-      if (savedState) {
-        try {
-          return JSON.parse(savedState);
-        } catch (e) {
-          console.error("Failed to parse saved game state:", e);
-        }
+      try {
+        const savedState = localStorage.getItem(STORAGE_KEY);
+        if (savedState) return JSON.parse(savedState);
+      } catch (e) {
+        console.error("Failed to load game state:", e);
       }
     }
     return initializeGame();
@@ -97,10 +94,7 @@ export default function ConnectionsGame() {
   }, [gameState]);
 
   function initializeGame(): GameState {
-    // Flatten all words from all categories
     const allWords = INITIAL_CATEGORIES.flatMap((category) => category.words);
-
-    // Shuffle the words using Fisher-Yates algorithm
     const shuffledWords = shuffleArray(allWords);
 
     return {
@@ -129,9 +123,7 @@ export default function ConnectionsGame() {
       }
 
       // If 4 words are already selected, don't add more
-      if (prev.selectedWords.length >= 4) {
-        return prev;
-      }
+      if (prev.selectedWords.length >= 4) return prev;
 
       // Add the word to selected words
       return {
@@ -148,8 +140,6 @@ export default function ConnectionsGame() {
     const matchingCategory = gameState.categories.find((category) => {
       const selectedSet = new Set(gameState.selectedWords);
       const categorySet = new Set(category.words);
-
-      // Check if the sets are equal (all words match)
       return (
         selectedSet.size === categorySet.size &&
         [...selectedSet].every((word) => categorySet.has(word))
@@ -157,28 +147,15 @@ export default function ConnectionsGame() {
     });
 
     if (matchingCategory) {
-      // Correct match - record the guess
+      // Correct match
       setGameState((prev) => {
         const newRemainingWords = prev.remainingWords.filter(
           (word) => !prev.selectedWords.includes(word)
         );
-
         const newSolvedCategories = [
           ...prev.solvedCategories,
           matchingCategory,
         ];
-
-        // Add the guess to history
-        const newGuessHistory = [
-          ...prev.guessHistory,
-          {
-            words: [...prev.selectedWords],
-            correct: true,
-            categoryColor: matchingCategory.color,
-          },
-        ];
-
-        // Check if game is won
         const gameWon = newRemainingWords.length === 0;
 
         return {
@@ -188,23 +165,33 @@ export default function ConnectionsGame() {
           solvedCategories: newSolvedCategories,
           gameOver: gameWon,
           gameWon,
-          guessHistory: newGuessHistory,
+          guessHistory: [
+            ...prev.guessHistory,
+            {
+              words: [...prev.selectedWords],
+              correct: true,
+              categoryColor: matchingCategory.color,
+            },
+          ],
         };
       });
     } else {
-      // Incorrect match - record the incorrect guess
+      // Check for "one away" situation
+      const isOneAwayInfo = checkOneAway();
+      if (isOneAwayInfo.isOneAway) {
+        toast.info(
+          <span className="font-medium">You're one away from a group!</span>,
+          {
+            id: "one-away-toast",
+            duration: 3000,
+          }
+        );
+      }
+
+      // Incorrect match
       setGameState((prev) => {
         const newMistakesRemaining = prev.mistakesRemaining - 1;
         const gameOver = newMistakesRemaining === 0;
-
-        // Add the incorrect guess to history
-        const newGuessHistory = [
-          ...prev.guessHistory,
-          {
-            words: [...prev.selectedWords],
-            correct: false,
-          },
-        ];
 
         return {
           ...prev,
@@ -212,10 +199,42 @@ export default function ConnectionsGame() {
           mistakesRemaining: newMistakesRemaining,
           gameOver,
           gameWon: false,
-          guessHistory: newGuessHistory,
+          guessHistory: [
+            ...prev.guessHistory,
+            {
+              words: [...prev.selectedWords],
+              correct: false,
+            },
+          ],
         };
       });
     }
+  }
+
+  function checkOneAway() {
+    let isOneAway = false;
+    let oneAwayCategory = null;
+
+    // Check each unsolved category
+    for (const category of gameState.categories) {
+      // Skip already solved categories
+      if (gameState.solvedCategories.some((c) => c.name === category.name))
+        continue;
+
+      // Count matches between selected words and this category
+      const matchCount = gameState.selectedWords.filter((word) =>
+        category.words.includes(word)
+      ).length;
+
+      // If exactly 3 words match, this is "one away"
+      if (matchCount === 3) {
+        isOneAway = true;
+        oneAwayCategory = category;
+        break;
+      }
+    }
+
+    return { isOneAway, oneAwayCategory };
   }
 
   function handleShuffle() {
@@ -227,7 +246,7 @@ export default function ConnectionsGame() {
       selectedWords: [],
     }));
 
-    // Add a small delay before shuffling to allow animations to play
+    // Add a small delay before shuffling
     setTimeout(() => {
       setGameState((prev) => ({
         ...prev,
@@ -239,23 +258,13 @@ export default function ConnectionsGame() {
 
   function handleDeselectAll() {
     if (gameState.isShuffling) return;
-
-    setGameState((prev) => ({
-      ...prev,
-      selectedWords: [],
-    }));
+    setGameState((prev) => ({ ...prev, selectedWords: [] }));
   }
 
   function handleReset() {
     const newState = initializeGame();
     setGameState(newState);
-    if (typeof window !== "undefined") {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
-      } catch (e) {
-        console.error("Failed to save reset game state:", e);
-      }
-    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
   }
 
   // If game is over, show the game over screen
@@ -299,38 +308,33 @@ export default function ConnectionsGame() {
       {/* Word grid */}
       <div className="grid grid-cols-4 gap-2 mb-6 w-full">
         <AnimatePresence>
-          {gameState.remainingWords.map((word, index) => {
-            // Calculate position in the grid (0-15)
-            const position = index;
-
-            return (
-              <motion.div
-                key={word}
-                layout
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                  transition: {
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 25,
-                    delay: position * 0.03,
-                  },
-                }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.3 }}
-                className="aspect-square"
-              >
-                <WordTile
-                  word={word}
-                  selected={gameState.selectedWords.includes(word)}
-                  onClick={() => handleWordSelect(word)}
-                  disabled={gameState.isShuffling}
-                />
-              </motion.div>
-            );
-          })}
+          {gameState.remainingWords.map((word, index) => (
+            <motion.div
+              key={word}
+              layout
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                transition: {
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 25,
+                  delay: index * 0.03,
+                },
+              }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.3 }}
+              className="aspect-square"
+            >
+              <WordTile
+                word={word}
+                selected={gameState.selectedWords.includes(word)}
+                onClick={() => handleWordSelect(word)}
+                disabled={gameState.isShuffling}
+              />
+            </motion.div>
+          ))}
         </AnimatePresence>
       </div>
 
