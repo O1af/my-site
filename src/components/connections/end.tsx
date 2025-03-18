@@ -180,22 +180,23 @@ export default function GameOver({
         </Button>
       </motion.div>
 
-      {/* Show all categories */}
-      {solvedCategories.map((category, index) => (
-        <motion.div key={`solved-${index}`} variants={item} className="w-full">
-          <CategoryReveal category={category} />
-        </motion.div>
-      ))}
+      {/* Show all categories - only render a category once */}
+      {allCategories.map((category, index) => {
+        // Check if this category is solved
+        const isSolved = solvedCategories.some(
+          (solved) => solved.name === category.name
+        );
 
-      {unsolvedCategories.map((category, index) => (
-        <motion.div
-          key={`unsolved-${index}`}
-          variants={item}
-          className="w-full"
-        >
-          <CategoryReveal category={category} />
-        </motion.div>
-      ))}
+        return (
+          <motion.div
+            key={`category-${index}`}
+            variants={item}
+            className="w-full"
+          >
+            <CategoryReveal category={category} />
+          </motion.div>
+        );
+      })}
 
       <motion.div variants={item}>
         <Button onClick={onReset} className="mt-6" size="lg">

@@ -75,7 +75,7 @@ export default function ConnectionsGame() {
   // Save game state to localStorage whenever it changes
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("connectionsGameState", JSON.stringify(gameState));
+      localStorage.setItem("connectionsGameState1", JSON.stringify(gameState));
     }
   }, [gameState]);
 
