@@ -17,7 +17,8 @@ import { ExperiencesCard } from "@/components/ExperiencesCard";
 const projects: Project[] = [
   {
     title: "Azure AI Adapter",
-    description: `Developed an open-source package for the Vercel AI SDK
+    description: `Developed an open-source package for the Vercel AI SDK with 300+ weekly downloads.
+    This package provides integration with the Azure AI API
 that enables access to 1,000+ models on Microsoft Azure, including DeepSeek-R1 & Meta LLama`,
     link: "https://www.npmjs.com/package/@quail-ai/azure-ai-provider",
     image: "/azure-ai.png",
@@ -50,7 +51,7 @@ const experiences: Experience[] = [
     company: "Netflix",
     period: "May 2025 - Aug 2025",
     description: "Ads Platform Team",
-    skills: [""],
+    skills: ["🚧"],
   },
   {
     title: "📚 Teaching Assistant",

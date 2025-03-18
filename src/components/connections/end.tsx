@@ -74,7 +74,7 @@ export default function GameOver({
 
   // Generate emoji grid for results
   const generateEmojiGrid = (): string => {
-    let result = "Connections\nolafdsouza.com\n";
+    let result = "olafdsouza.com/connections\n";
 
     // For correct guesses, we use the actual category color
     // For incorrect guesses, show a mix of squares based on where those words actually belong
