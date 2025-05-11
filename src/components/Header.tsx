@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { useLocation } from "react-router";
+import { useLocation, Link as RouterLink } from "react-router";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -20,6 +20,7 @@ const navigationSections: NavSection[] = [
   { title: "Home", href: "/" },
   { title: "Blog", href: "/blog" },
   { title: "Connections", href: "/connections" },
+  { title: "Chat", href: "https://chat.olafdsouza.com" },
 ];
 
 const Header: React.FC = () => {
@@ -74,29 +75,43 @@ const Header: React.FC = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 * (index + 1), duration: 0.5 }}
                     >
-                      <NavigationMenuLink
-                        href={section.href}
-                        className={cn(
-                          navigationMenuTriggerStyle(),
-                          "cursor-pointer relative font-medium",
-                          location.pathname === section.href
-                            ? "text-primary"
-                            : "hover:text-primary/80 transition-colors"
-                        )}
-                      >
-                        {section.title}
-                        {location.pathname === section.href && (
-                          <motion.div
-                            className="absolute -bottom-[1.5px] left-0 right-0 h-[2px] bg-primary"
-                            layoutId="underline"
-                            transition={{
-                              type: "spring",
-                              stiffness: 300,
-                              damping: 30,
-                            }}
-                          />
-                        )}
-                      </NavigationMenuLink>
+                      {section.href.startsWith("http") ? (
+                        <a
+                          href={section.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={cn(
+                            navigationMenuTriggerStyle(),
+                            "cursor-pointer relative font-medium hover:text-primary/80 transition-colors"
+                          )}
+                        >
+                          {section.title}
+                        </a>
+                      ) : (
+                        <RouterLink
+                          to={section.href}
+                          className={cn(
+                            navigationMenuTriggerStyle(),
+                            "cursor-pointer relative font-medium",
+                            location.pathname === section.href
+                              ? "text-primary"
+                              : "hover:text-primary/80 transition-colors"
+                          )}
+                        >
+                          {section.title}
+                          {location.pathname === section.href && (
+                            <motion.div
+                              className="absolute -bottom-[1.5px] left-0 right-0 h-[2px] bg-primary"
+                              layoutId="underline"
+                              transition={{
+                                type: "spring",
+                                stiffness: 300,
+                                damping: 30,
+                              }}
+                            />
+                          )}
+                        </RouterLink>
+                      )}
                     </motion.div>
                   </NavigationMenuItem>
                 ))}
